@@ -1,0 +1,7 @@
+py-cord
+matplotlib
+Pillow
+requests
+Flask
+python-dotenv
+beautifulsoup4
