@@ -7,6 +7,7 @@ import keep_alive
 # imports from other files
 from translate import translate_text
 from dmoj import fetch_points, fetch_ccc, connect_account
+from db_utils import fetch_id
 
 load_dotenv("environment/.env")  # load all the variables from the env file
 token = str(os.getenv("TOKEN"))
@@ -75,14 +76,25 @@ async def ccc_points(ctx, username: discord.Option(str,
                                                    "Get the points of a specific user (this is your own DMOJ account by default)",
                                                    required=False)):
     try:
+        # return data on a specific DMOJ account
         if username:
-            points: int = fetch_points(username)
-            await ctx.respond(f"You have **{points}** CCC points on DMOJ.")
+            points = fetch_points(username)
+            await ctx.respond(f"**{username}** has **{points}** CCC points.")
+
+        # get your own data
+        else:
+            user = fetch_id(ctx.author.id)
+            if not user:  # user did not connect to a DMOJ account
+                await ctx.respond("You have not connected to a DMOJ account yet. You can do so using `/connect_account [DMOJ username]`")
+            else:
+                points = fetch_points(user)
+                await ctx.respond(f"You have **{points}** CCC points.")
 
     except Exception as e:
         print(e)
         await ctx.respond(
-            "An error has occurred while fetching your CCC points. Please make you input a valid DMOJ account", ephemeral=True)
+            "An error has occurred while fetching CCC points. Please make you input a valid DMOJ account",
+            ephemeral=True)
 
 
 @bot.slash_command(name="connect_account", description="Connect your discord account to your DMOJ account")

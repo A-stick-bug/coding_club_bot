@@ -28,7 +28,7 @@ def fetch_points(user: str):
     for group in groups:
         s = group.text.replace("(", "").split()
         if s[0] == "CCC":
-            return s[1]
+            return int(round(float(s[1]), 0))
     return 0
 
 
