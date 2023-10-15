@@ -1,3 +1,4 @@
 environment/
 userdata/*
 *.pyc
+assets/*
