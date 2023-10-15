@@ -5,7 +5,7 @@ import os
 
 from user_data import UserData, USER_DATA_DIRECTORY
 
-from .common import (
+from common import (
     BLACK, WHITE, GREEN, BLUE, ORANGE, YELLOW,
     FONT_PATH,
     draw_user_avatar, text_shadow

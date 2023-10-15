@@ -5,7 +5,7 @@ from user_data import get_user_data
 from dmoj import fetch_points
 from levels import get_next_level_experience, get_next_level_percentage
 
-from .common import (
+from common import (
     BLACK, WHITE, GREEN, BLUE, ORANGE, YELLOW,
     FONT_PATH,
     draw_user_avatar, text_shadow

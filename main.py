@@ -9,8 +9,8 @@ from translate import translate_text
 from user_data import get_user_data
 from dmoj import connect_account
 from levels import handle_message_sent
-from coding_club_bot.banner import make_banner
-from coding_club_bot.leaderboard import make_leaderboard
+from banner import make_banner
+from leaderboard import make_leaderboard
 
 load_dotenv("environment/.env")  # load all the variables from the env file
 token = os.getenv("TOKEN")
