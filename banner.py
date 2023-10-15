@@ -1,6 +1,5 @@
 import discord
-from PIL import ImageDraw, ImageFont, ImageOps
-import Image
+from PIL import ImageDraw, ImageFont, ImageOps, Image
 
 from user_data import get_user_data
 from dmoj import fetch_points
@@ -23,11 +22,11 @@ def _create_base_image():
     """
     img = Image.new("RGB", (800, 200), BLUE)
     draw = ImageDraw.Draw(img)
-    
-    #Background
+
+    # Background
     draw.ellipse((40, -240, 460, 300), GREEN)
     draw.rectangle((0, 0, 200, 200), GREEN)
-    
+
     img.save("assets/fetch_points_base.png")
 
 
@@ -40,31 +39,32 @@ def draw_progress_bar_inside(bar_inside_image, width: int, height: int, percenta
     points = [(0, 0), (x_end + 5, 0), (x_end - 5, height), (0, height)]
     bar_inside_draw.polygon(points, YELLOW)
 
+
 def draw_progress_bar(draw, dest, bounding_box: tuple[int, int, int, int], percentage: float) -> None:
     """
     Draws a progress bar onto the destination image.
     """
-    #Get the size of the progress bar
+    # Get the size of the progress bar
     width = bounding_box[2] - bounding_box[0]
     height = bounding_box[3] - bounding_box[1]
     size = (width, height)
-    
-    #Create a mask
+
+    # Create a mask
     mask = Image.new("L", size, 1)
     mask_draw = ImageDraw.Draw(mask)
     mask_draw.rounded_rectangle(((0, 0), size), 16, 255, 0, 3)
-    
-    #Create an image for the inside of the bar
+
+    # Create an image for the inside of the bar
     bar_inside = Image.new("RGB", size, WHITE)
     draw_progress_bar_inside(bar_inside, width, height, percentage)
-    #Crop the image using the mask
+    # Crop the image using the mask
     inside_masked = ImageOps.fit(bar_inside, mask.size, centering=(0.5, 0.5))
     inside_masked.putalpha(mask)
-    
-    #Draw the rectangle
+
+    # Draw the rectangle
     draw.rounded_rectangle(bounding_box, 16, WHITE, ORANGE, 3)
-    
-    #Draw the progress bar
+
+    # Draw the progress bar
     dest.paste(inside_masked, bounding_box[:2], inside_masked)
 
 
@@ -85,12 +85,12 @@ def make_banner(user: discord.User) -> str:
     """
     img = Image.open("assets/fetch_points_base.png")
     img.load()
-    
+
     draw = ImageDraw.Draw(img)
-    
+
     draw_user_avatar(user, img, 120, (30, 20))
-    
-    #Write the user's name
+
+    # Write the user's name
     name_length = len(user.name)
     if name_length <= 12:
         font_username_size = 38
@@ -100,27 +100,26 @@ def make_banner(user: discord.User) -> str:
         name_text_y = 36 + (name_length - 12) // 2
     font_username = ImageFont.truetype(FONT_PATH, font_username_size)
     draw.text((175, name_text_y), user.name, BLACK, font=font_username)
-    
-    #Get user data
+
+    # Get user data
     user_data = get_user_data(user.id)
-    
-    #Draw the progress bar
+
+    # Draw the progress bar
     next_level_percentage = get_next_level_percentage(user_data)
     draw_progress_bar(draw, img, (175, 95, 425, 130), next_level_percentage)
-    
-    #Write statistics
+
+    # Write statistics
     points = fetch_points(user_data.dmoj_username)
     text_shadow(draw, (490, 25), f"CCC Points: {points:,}", font_side)
     text_shadow(draw, (490, 65), f"Level: {user_data.level:,}", font_side)
     text_shadow(draw, (490, 105), f"XP: {user_data.experience:,}", font_side)
     text_shadow(draw, (490, 145), f"Messages: {user_data.messages:,}", font_side)
-    
-    #Write experience under the progress bar
+
+    # Write experience under the progress bar
     experience_str = abbreviate_integer(user_data.experience)
     next_level = get_next_level_experience(user_data.level)
     next_level_str = abbreviate_integer(next_level)
     draw.text((185, 150), f"XP: {experience_str} / {next_level_str}", BLACK, font_experience)
-    
+
     img.save("assets/temp_banner.png")
     return "assets/temp_banner.png"
-

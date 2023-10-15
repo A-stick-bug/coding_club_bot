@@ -1,6 +1,6 @@
 py-cord
 matplotlib
-Pillow
+pillow
 requests
 Flask
 python-dotenv

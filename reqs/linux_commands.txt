@@ -3,3 +3,6 @@ Optional: for oracle cloud server
 sudo dnf install python39-pip -y
 python3.9 -m pip install -r requirements.txt
 nohup python3.9 main.py
+
+To kill nohup:
+kill -15 -1 16000
