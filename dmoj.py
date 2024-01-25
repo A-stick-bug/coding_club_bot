@@ -9,6 +9,7 @@ user_base = "https://dmoj.ca/api/v2/user/"
 
 
 def fetch_ccc(user: str, api_key: str):
+    """dead function since no one will bother sending their API key every time, just use the web scraper below"""
     url = user_base + user
     headers = {"Authorization": f"Bearer {api_key}"}
     response = requests.get(url, headers)
@@ -22,19 +23,22 @@ def fetch_ccc(user: str, api_key: str):
 
 def fetch_points(dmoj_username: str) -> int:
     """
-    Returns how many CCC points a DMOJ user has.
+    Returns how many CCC/CCO points a DMOJ user has.
     """
     url = f"https://dmoj.ca/user/{dmoj_username}/solved"
     response = requests.get(url)
     html = response.text
     soup = BeautifulSoup(html, 'html.parser')
-    
+
+    valid_groups = ["CCC", "CCO"]
+
     groups = soup.find_all(class_='unselectable toggle closed')
+    total = 0
     for group in groups:
         s = group.text.replace("(", "").split()
-        if s[0] == "CCC":
-            return int(round(float(s[1]), 0))
-    return 0
+        if s[0] in valid_groups:
+            total += int(round(float(s[1]), 0))
+    return total
 
 
 def connect_account(user_id: int, dmoj_username: str) -> None:
@@ -57,4 +61,3 @@ def connect_account(user_id: int, dmoj_username: str) -> None:
         )
     
     user_data.save_to_file()
-

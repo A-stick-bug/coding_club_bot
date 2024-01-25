@@ -25,7 +25,7 @@ def get_top_users() -> list[UserData]:
         if partial_filename.endswith(".txt"):
             full_filename = f"{USER_DATA_DIRECTORY}/{partial_filename}"
             users.append(UserData.from_filename(full_filename))
-    users.sort(key=lambda user_data: user_data.level, reverse=True)
+    users.sort(key=lambda user_data: user_data.experience, reverse=True)
     return users[:10]
 
 
