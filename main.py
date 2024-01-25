@@ -11,6 +11,7 @@ from dmoj import connect_account
 from levels import handle_message_sent
 from banner import make_banner
 from leaderboard import make_leaderboard
+from points_plotter import fetch_problem_history, fetch_point_history, plot_points
 
 load_dotenv("environment/.env")  # load all the variables from the env file
 token = os.getenv("TOKEN")
@@ -167,6 +168,58 @@ async def connect_dmoj_account(ctx, username: discord.Option(str, "Your DMOJ use
     except:
         await ctx.respond(
             "An error has occurred while connecting your account. Please make sure that you correctly input your DMOJ username; if you did, then please alert an Executive or Contributor.")
+        raise
+
+
+@bot.slash_command(name="plot_points", description="Plot your DMOJ points progression")
+async def plot_dmoj_points(ctx, user: discord.Option(discord.User, "Plot points of another user",
+                                                     required=False, default=None)):
+    try:
+        await ctx.defer()
+        user_id = user.id if user else ctx.author.id
+        user_data = get_user_data(user_id)
+        if user_data is None:
+            if user:
+                await ctx.respond(
+                    f"{user.name} has not connected to a DMOJ account yet. This can be done using `/connect_account [DMOJ username]`")
+            else:
+                await ctx.respond(
+                    "You have not connected to a DMOJ account yet. You can do so using `/connect_account [DMOJ username]`")
+            return
+
+        api_tk = os.getenv("DMOJ_PASSWORD")
+        history = fetch_point_history(user_data.dmoj_username, api_tk)
+        plot_points(history, user_data.dmoj_username, "Points", "Points Progression")
+        await ctx.respond(file=discord.File('point_graph.png'))
+
+    except:
+        await ctx.respond("An error has occurred while plotting points. Please alert an Executive or Contributor.")
+        raise
+
+
+@bot.slash_command(name="plot_problems", description="Plot your DMOJ problems progression")
+async def plot_dmoj_problems(ctx, user: discord.Option(discord.User, "Plot problems of another user",
+                                                     required=False, default=None)):
+    try:
+        await ctx.defer()
+        user_id = user.id if user else ctx.author.id
+        user_data = get_user_data(user_id)
+        if user_data is None:
+            if user:
+                await ctx.respond(
+                    f"{user.name} has not connected to a DMOJ account yet. This can be done using `/connect_account [DMOJ username]`")
+            else:
+                await ctx.respond(
+                    "You have not connected to a DMOJ account yet. You can do so using `/connect_account [DMOJ username]`")
+            return
+
+        api_tk = os.getenv("DMOJ_PASSWORD")
+        history = fetch_problem_history(user_data.dmoj_username, api_tk)
+        plot_points(history, user_data.dmoj_username, "Problems Solved", "Problems Progression")
+        await ctx.respond(file=discord.File('point_graph.png'))
+
+    except:
+        await ctx.respond("An error has occurred while plotting problems. Please alert an Executive or Contributor.")
         raise
 
 

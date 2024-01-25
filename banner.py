@@ -40,7 +40,7 @@ def draw_progress_bar_inside(bar_inside_image, width: int, height: int, percenta
     bar_inside_draw.polygon(points, YELLOW)
 
 
-def draw_progress_bar(draw, dest, bounding_box: tuple[int, int, int, int], percentage: float) -> None:
+def draw_progress_bar(draw, dest, bounding_box, percentage: float) -> None:
     """
     Draws a progress bar onto the destination image.
     """

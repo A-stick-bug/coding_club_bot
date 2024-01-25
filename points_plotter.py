@@ -7,6 +7,7 @@ import json
 
 # for plotting
 import matplotlib.pyplot as plt
+import datetime as dt
 
 
 def fetch_submission(user: str, api_key: str, page: int) -> dict:
@@ -51,6 +52,7 @@ def fetch_point_history(user: str, api_key: str):
     get the data for the plotter
     plotted data: balanced points (after aplying formula)
     """
+
     def balance(questions):
         """applies formula to points based on question values"""
         bal = sorted(questions.values(), reverse=True)  # sort by point worth
@@ -82,10 +84,34 @@ def fetch_point_history(user: str, api_key: str):
     return point_gains
 
 
+def fetch_problem_history(user: str, api_key: str):
+    """
+    get a user's history of problems solved
+    """
+    data = fetch_submission(user, api_key, 1)  # get number of submission pages
+    n_pages = data["data"]["total_pages"]
+
+    problems_solved = []  # (times when problems were solved, new problems solved)
+    ac = set()
+    for page in range(1, n_pages + 1):  # process each page (need multiple requests)
+        data = fetch_submission(user, api_key, page)
+        submissions = data["data"]["objects"]
+
+        for sub in submissions:  # process each submission
+            problem = sub["problem"]
+            date = sub["date"].split("T")[0]
+            if sub["result"] == "AC" and problem not in ac:  # solved new problem
+                ac.add(problem)
+                problems_solved.append((date, len(ac)))
+
+    return problems_solved
+
+
 def fetch_mock_data():
     """
     :return: balanced points based on mock data
     """
+
     def balance(questions):
         """applies formula to points based on question values"""
         bal = sorted(questions.values(), reverse=True)  # sort by point worth
@@ -114,29 +140,40 @@ def fetch_mock_data():
     return point_gains
 
 
-def plot_points(history: list, name: str):
+def plot_points(history: list, name: str, y_text: str, title: str):
     """
     saves a picture of the graph
     """
-    x = list(map(lambda x: x[0], history))
+    x = [dt.datetime.strptime(d[0], '%Y-%m-%d').date() for d in history]  # extract time as datetime
     y = list(map(lambda x: x[1], history))
-    plt.xlabel("Date")
-    plt.ylabel("Points")
-    plt.title(f"{name}'s Problems Progression")
-    plt.plot(x, y)
+
+    # labels
+    plt.xlabel("Date", fontsize=9)
+    plt.ylabel(y_text)
+    plt.title(f"{name}'s {title}")
+    plt.grid(color="silver")
+    plt.xticks(rotation=13, fontsize=8.5)  # rotate to prevent overlap in text
+
+    # save plot as image
+    plt.plot(x, y, label=f"{name} ({round(history[-1][1], 2)})")
+    plt.legend(loc="upper left")
     plt.savefig('point_graph.png')
     plt.close()
 
 
 if __name__ == '__main__':
-    TESTING = True
+    TESTING = 0
     user = "Ivan_Li"
 
     load_dotenv("environment/.env")  # load all the variables from the env file
-    token = os.getenv("TOKEN")
+    token = os.getenv("DMOJ_PASSWORD")
     if TESTING:
         history = fetch_mock_data()
     else:
-        history = fetch_point_history(user, token)
+        history = fetch_problem_history(user, token)
 
-    plot_points(history, user)
+    # plot points
+    plot_points(history, user, "Points", "Points Progression")
+
+    # # plot problems solved
+    # plot_points(history, user, "Problems Solved", "Problems Progression")

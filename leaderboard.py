@@ -15,7 +15,7 @@ font_leaderboard = ImageFont.truetype(FONT_PATH, 55)
 font_username = ImageFont.truetype(FONT_PATH, 38)
 
 
-def get_top_users() -> list[UserData]:
+def get_top_users():
     """
     Returns data for the top users in the server.
     At most 10 entries will be returned.

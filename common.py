@@ -21,7 +21,7 @@ def request_image(url: str):
     return image
 
 
-def crop_circle(src, dest, position: tuple[int, int]) -> None:
+def crop_circle(src, dest, position) -> None:
     """
     Crops the source image into a circle and draws it onto the destination image.
     """
@@ -36,7 +36,7 @@ def crop_circle(src, dest, position: tuple[int, int]) -> None:
     dest.paste(output, position, output)
 
 
-def draw_user_avatar(user, dest_image, size: int, position: tuple[int, int]) -> None:
+def draw_user_avatar(user, dest_image, size: int, position) -> None:
     """
     Draws the avatar of the given user onto the destination image at the given position.
     """
@@ -45,7 +45,7 @@ def draw_user_avatar(user, dest_image, size: int, position: tuple[int, int]) -> 
     crop_circle(avatar_image, dest_image, position)
 
 
-def text_shadow(draw, position: tuple[int, int], text: str, font, fore=WHITE, back=BLACK, offset=3,
+def text_shadow(draw, position, text: str, font, fore=WHITE, back=BLACK, offset=3,
                 anchor="la") -> None:
     """
     Draws text with a shadow.
