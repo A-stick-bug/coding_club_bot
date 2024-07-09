@@ -2,3 +2,4 @@ environment/
 userdata
 *.pyc
 assets
+point_graph.png

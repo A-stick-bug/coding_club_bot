@@ -5,3 +5,4 @@ requests
 Flask
 python-dotenv
 beautifulsoup4
+mysql-connector-python

@@ -13,18 +13,19 @@ def handle_message_sent(ctx, is_slash_command=True) -> None:
     user_data = get_user_data(ctx.author.id)
     if user_data is not None:
         _handle_message_sent_user_data(ctx, user_data, is_slash_command)
-        user_data.save_to_file()
+        user_data.save_to_db()
+
 
 def _handle_message_sent_user_data(ctx, user_data: UserData, is_slash_command: bool) -> None:
     user_data.messages += 1
-    
+
     time_now = int(time.time())
     if time_now < user_data.next_experience_gain_time:
         return
-    
+
     user_data.next_experience_gain_time = time_now + 30
-    
-    #Increase experience
+
+    # Increase experience
     gained_experience = random.randint(5, 10)
     if is_slash_command:
         gained_experience *= 5
@@ -32,12 +33,12 @@ def _handle_message_sent_user_data(ctx, user_data: UserData, is_slash_command: b
         gained_experience *= 1 + math.log(len(ctx.content))
     else:
         gained_experience *= 3
-    
+
     user_data.experience += round(gained_experience)
-    
+
     if user_data.experience >= get_next_level_experience(user_data.level):
         user_data.level += 1
-    
+
     print(gained_experience, "experience earned")
 
 
@@ -60,8 +61,7 @@ def get_next_level_percentage(user_data: UserData) -> float:
         previous_level_experience = get_next_level_experience(level - 1)
     next_level_experience = get_next_level_experience(level)
     delta_experience = next_level_experience - previous_level_experience
-    
-    current_level_experience = user_data.experience - previous_level_experience
-    
-    return current_level_experience / delta_experience
 
+    current_level_experience = user_data.experience - previous_level_experience
+
+    return current_level_experience / delta_experience

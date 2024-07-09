@@ -7,7 +7,7 @@ import time
 
 
 def query(question):
-    url = f"https://wolfreealpha.gitlab.io/input?i={question}&lang=en"
+    url = f"https://wolfreealpha.netlify.app/input/?i={question}&lang=en"
 
     options = webdriver.EdgeOptions()
     #options.add_argument('--headless')

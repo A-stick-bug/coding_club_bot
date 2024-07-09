@@ -3,7 +3,7 @@ import requests
 from io import BytesIO
 import os
 
-from user_data import UserData, USER_DATA_DIRECTORY
+from user_data import UserData, get_top_users
 
 from common import (
     BLACK, WHITE, GREEN, BLUE, ORANGE, YELLOW,
@@ -13,20 +13,6 @@ from common import (
 
 font_leaderboard = ImageFont.truetype(FONT_PATH, 55)
 font_username = ImageFont.truetype(FONT_PATH, 38)
-
-
-def get_top_users():
-    """
-    Returns data for the top users in the server.
-    At most 10 entries will be returned.
-    """
-    users = []
-    for partial_filename in os.listdir(USER_DATA_DIRECTORY):
-        if partial_filename.endswith(".txt"):
-            full_filename = f"{USER_DATA_DIRECTORY}/{partial_filename}"
-            users.append(UserData.from_filename(full_filename))
-    users.sort(key=lambda user_data: user_data.experience, reverse=True)
-    return users[:10]
 
 
 def make_leaderboard(bot) -> str:

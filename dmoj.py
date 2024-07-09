@@ -60,4 +60,4 @@ def connect_account(user_id: int, dmoj_username: str) -> None:
             next_experience_gain_time=0
         )
     
-    user_data.save_to_file()
+    user_data.save_to_db()
