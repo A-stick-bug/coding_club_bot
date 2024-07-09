@@ -72,13 +72,13 @@ class UserData:
         # put the user_object's information into the database
         query = f"""update user_data set 
         user_id = '{self.user_id}',
-        dmoj_username = '{self.dmoj_username}',
+        dmoj_username = %s,
         user_level = {self.level},
         experience = {self.experience},
         messages = {self.messages},
         next_experience_gain_time = {self.next_experience_gain_time} 
         where user_id = '{self.user_id}'"""
-        control.execute(query)
+        control.execute(query, [self.dmoj_username])
         db.commit()
 
 
@@ -107,5 +107,6 @@ def get_top_users():
 
 if __name__ == '__main__':
     dt = get_user_data(123)
-    dt.experience = 9999999
+    dt.level = 9999999
+    dt.dmoj_username = "Hello world"
     dt.save_to_db()
