@@ -2,6 +2,8 @@ import discord
 
 import os
 from dotenv import load_dotenv
+from typing import List
+
 import keep_alive
 
 # imports from other files
@@ -12,6 +14,7 @@ from levels import handle_message_sent
 from banner import make_banner
 from leaderboard import make_leaderboard
 from points_plotter import fetch_problem_history, fetch_point_history, plot_points
+from problem_types_plotter import plot_problem_types
 
 load_dotenv("environment/.env")  # load all the variables from the env file
 token = os.getenv("TOKEN")
@@ -199,7 +202,7 @@ async def plot_dmoj_points(ctx, user: discord.Option(discord.User, "Plot points 
 
 @bot.slash_command(name="plot_problems", description="Plot your DMOJ problems progression")
 async def plot_dmoj_problems(ctx, user: discord.Option(discord.User, "Plot problems of another user",
-                                                     required=False, default=None)):
+                                                       required=False, default=None)):
     try:
         await ctx.defer()
         user_id = user.id if user else ctx.author.id
@@ -220,6 +223,33 @@ async def plot_dmoj_problems(ctx, user: discord.Option(discord.User, "Plot probl
 
     except:
         await ctx.respond("An error has occurred while plotting problems. Please alert an Executive or Contributor.")
+        raise
+
+
+@bot.slash_command(name="plot_problem_types", description="Plot your DMOJ solved problem's types")
+async def plot_problem_types_cmd(ctx, users: discord.Option(str,
+                                                            "Plot problem types of other users (DMOJ usernames, separate with comma)",
+                                                            required=False, default=None)):
+    try:
+        await ctx.defer()
+        if not users:  # plot your own problem types
+            user_id = ctx.author.id
+            user_data = get_user_data(user_id)
+            if user_data is None:
+                await ctx.respond(
+                    "You have not connected to a DMOJ account yet. You can do so using `/connect_account [DMOJ username]`")
+                return
+            plot_problem_types([user_data.dmoj_username])
+
+        else:  # plot and compare other people's problem types
+            dmoj_usernames = users.split(",")
+            dmoj_usernames = list(map(lambda x: x.strip(), dmoj_usernames))  # strip whitespace from all usernames
+            plot_problem_types(dmoj_usernames)
+        await ctx.respond(file=discord.File('problem_types_graph.png'))
+
+    except Exception as e:
+        await ctx.respond(f"An error has occurred while plotting types. Please alert an Executive or "
+                          f"Contributor: {e}")
         raise
 
 
