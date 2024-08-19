@@ -112,7 +112,7 @@ async def react(ctx, message: discord.Option(str,
         )
     except:
         await ctx.respond(
-            "An error has occurred while reacting. Make sure that the bot has permission to react external emojis (from other servers); if it does, then please alert an Executive or Contributor.",
+            "An error has occurred while reacting. Make sure that the bot has permission to react external emojis (from other servers); if it does, then please alert an Executive.",
             ephemeral=True
         )
         raise
@@ -143,7 +143,7 @@ async def ccc_points(ctx, user: discord.Option(discord.User, "Get the points of 
             await ctx.followup.send(file=discord.File(file_pointer))
 
     except:
-        await ctx.respond("An error has occurred while fetching CCC points. Please alert an Executive or Contributor.")
+        await ctx.respond("An error has occurred while fetching CCC points. Please alert an Executive.")
         raise
 
 
@@ -158,7 +158,7 @@ async def leaderboard(ctx):
 
     except:
         await ctx.respond(
-            "An error has occurred while fetching the leaderboard. Please alert an Executive or Contributor.")
+            "An error has occurred while fetching the leaderboard. Please alert an Executive.")
         raise
 
 
@@ -170,7 +170,7 @@ async def connect_dmoj_account(ctx, username: discord.Option(str, "Your DMOJ use
 
     except:
         await ctx.respond(
-            "An error has occurred while connecting your account. Please make sure that you correctly input your DMOJ username; if you did, then please alert an Executive or Contributor.")
+            "An error has occurred while connecting your account. Please make sure that you correctly input your DMOJ username; if you did, then please alert an Executive.")
         raise
 
 
@@ -196,7 +196,7 @@ async def plot_dmoj_points(ctx, user: discord.Option(discord.User, "Plot points 
         await ctx.respond(file=discord.File('point_graph.png'))
 
     except:
-        await ctx.respond("An error has occurred while plotting points. Please alert an Executive or Contributor.")
+        await ctx.respond("An error has occurred while plotting points. Please alert an Executive.")
         raise
 
 
@@ -222,7 +222,7 @@ async def plot_dmoj_problems(ctx, user: discord.Option(discord.User, "Plot probl
         await ctx.respond(file=discord.File('point_graph.png'))
 
     except:
-        await ctx.respond("An error has occurred while plotting problems. Please alert an Executive or Contributor.")
+        await ctx.respond("An error has occurred while plotting problems. Please alert an Executive.")
         raise
 
 
@@ -248,8 +248,8 @@ async def plot_problem_types_cmd(ctx, users: discord.Option(str,
         await ctx.respond(file=discord.File('problem_types_graph.png'))
 
     except Exception as e:
-        await ctx.respond(f"An error has occurred while plotting types. Please alert an Executive or "
-                          f"Contributor: {e}")
+        await ctx.respond(f"An error has occurred while plotting types. Please alert an Executive. "
+                          f"Error message: {e}")
         raise
 
 

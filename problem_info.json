@@ -8910,38 +8910,6 @@
   "equivaddr": [
     "Implementation"
   ],
-  "etsr23r2p1": [
-    "Simple Math"
-  ],
-  "etsr23r2p2": [
-    "Dynamic Programming"
-  ],
-  "etsr23r2p3": [
-    "Game Theory"
-  ],
-  "etsr23r2p4": [
-    "Dynamic Programming"
-  ],
-  "etsr23r3p1": [
-    "Data Structures"
-  ],
-  "etsr23r3p2": [
-    "Geometry"
-  ],
-  "etsr23r3p3": [
-    "Data Structures",
-    "Graph Theory"
-  ],
-  "etsr23r4p1": [
-    "Brute Force",
-    "Graph Theory"
-  ],
-  "etsr23r4p2": [
-    "Intermediate Math"
-  ],
-  "etsr23r4p3": [
-    "Dynamic Programming"
-  ],
   "evanscube": [
     "Implementation"
   ],
@@ -10014,6 +9982,10 @@
   ],
   "hungry": [
     "Implementation"
+  ],
+  "hutaofractal": [
+    "Implementation",
+    "Recursion"
   ],
   "icebergs": [
     "Graph Theory"

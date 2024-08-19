@@ -5,11 +5,16 @@ import time
 from dmoj import fetch_points
 from user_data import UserData, get_user_data
 
+# only messages and commands sent in this server count towards points
+BOT_SERVER_ID = 1151610487159672982
+
 
 def handle_message_sent(ctx, is_slash_command=True) -> None:
     """
     Updates the experience and level of the user who sent a message or used a slash command.
     """
+    if ctx.guild.id != BOT_SERVER_ID:
+        return
     user_data = get_user_data(ctx.author.id)
     if user_data is not None:
         _handle_message_sent_user_data(ctx, user_data, is_slash_command)

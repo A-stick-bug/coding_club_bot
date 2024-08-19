@@ -152,7 +152,10 @@ def get_user_problem_types(user: str):
         type_table = json.load(problem_types)
     total = defaultdict(int)
     for p in problems:
+        if p not in type_table:
+            raise KeyError(f"Problem code '{p}' not found. 'problem_info.json' may be outdated.")
         types = type_table[p]
+
         for t in types:
             if "Math" in t:  # combine all 3 math categories
                 total["Math"] += 1
@@ -189,5 +192,4 @@ def plot_problem_types(users):
 
 
 if __name__ == '__main__':
-    users = ["ivan_li"]
-    plot_problem_types(users)
+    update_problem_info()
