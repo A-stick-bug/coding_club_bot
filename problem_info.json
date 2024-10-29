@@ -1743,6 +1743,25 @@
     "Geometry",
     "Interactive"
   ],
+  "bts24p1": [
+    "Implementation"
+  ],
+  "bts24p2": [
+    "Greedy Algorithms"
+  ],
+  "bts24p3": [
+    "Divide and Conquer"
+  ],
+  "bts24p4": [
+    "Greedy Algorithms"
+  ],
+  "bts24p5": [
+    "Data Structures"
+  ],
+  "bts24p6": [
+    "Dynamic Programming",
+    "Graph Theory"
+  ],
   "building": [
     "Data Structures",
     "Dynamic Programming"
@@ -9779,7 +9798,7 @@
     "Implementation"
   ],
   "guessinggame": [
-    "Implementation",
+    "Interactive",
     "Simple Math"
   ],
   "hailstone": [
@@ -10605,6 +10624,26 @@
   ],
   "ioi23p6": [
     "Ad Hoc"
+  ],
+  "ioi24p1": [
+    "Data Structures"
+  ],
+  "ioi24p2": [
+    "Interactive"
+  ],
+  "ioi24p3": [
+    "Dynamic Programming",
+    "Graph Theory"
+  ],
+  "ioi24p4": [
+    "Greedy Algorithms"
+  ],
+  "ioi24p5": [
+    "Data Structures"
+  ],
+  "ioi24p6": [
+    "Graph Theory",
+    "Interactive"
   ],
   "ioi94p1": [
     "Dynamic Programming"
@@ -12799,6 +12838,9 @@
     "Greedy Algorithms",
     "String Algorithms"
   ],
+  "occ19s4": [
+    "Data Structures"
+  ],
   "occ19s5": [
     "Dynamic Programming"
   ],
@@ -12941,6 +12983,22 @@
     "Implementation"
   ],
   "othscc1p5": [
+    "Graph Theory"
+  ],
+  "othscc2p1": [
+    "Implementation"
+  ],
+  "othscc2p2": [
+    "Implementation"
+  ],
+  "othscc2p3": [
+    "Greedy Algorithms",
+    "Simple Math"
+  ],
+  "othscc2p4": [
+    "Implementation"
+  ],
+  "othscc2p5": [
     "Graph Theory"
   ],
   "p100ex4": [

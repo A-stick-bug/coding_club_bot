@@ -21,7 +21,7 @@ from matplotlib.transforms import Affine2D
 
 load_dotenv("environment/.env")  # load all the variables from the env file
 api_key = os.getenv("DMOJ_PASSWORD")
-PAGES = 115
+PAGES = 160  # max pages on DMOJ
 CATEGORIES = ["Data Structures", "Greedy Algorithms", "Ad Hoc",
               "Math", "String Algorithms", "Graph Theory", "Dynamic Programming"]
 
@@ -119,9 +119,12 @@ def radar_factory(num_vars, frame='circle'):
 def update_problem_info():
     """Go through all problems on DMOJ and store their types"""
     type_table = {}
-    for i in range(1, PAGES + 1):
-        url = f"https://dmoj.ca/problems/?show_types=1&page={i}"
-        html_content = requests.get(url).text
+    for i in range(1, PAGES + 1):  # go through all pages on DMOJ
+        try:
+            url = f"https://dmoj.ca/problems/?show_types=1&page={i}"
+            html_content = requests.get(url).text
+        except:  # all pages visited
+            break
         soup = BeautifulSoup(html_content, features="html.parser")
 
         for row in soup.find_all("td", class_="problem"):
