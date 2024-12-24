@@ -6,3 +6,11 @@ nohup python3.9 main.py
 
 To kill nohup:
 kill -15 -1 16000
+
+
+SQL commands
+- password: check .env
+- to login: mysql -u root -p
+
+restart sql server: sudo systemctl restart mysqld
+check status: sudo systemctl status mysqld

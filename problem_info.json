@@ -562,6 +562,21 @@
   "ahardergame": [
     "Greedy Algorithms"
   ],
+  "ahscc1p1": [
+    "Simple Math"
+  ],
+  "ahscc1p2": [
+    "Constructive"
+  ],
+  "ahscc1p3": [
+    "Implementation"
+  ],
+  "ahscc1p4": [
+    "Data Structures"
+  ],
+  "ahscc1p5": [
+    "Greedy Algorithms"
+  ],
   "alawnsproblem": [
     "Greedy Algorithms"
   ],
@@ -631,6 +646,30 @@
   ],
   "ampl2024spracticep1": [
     "Implementation"
+  ],
+  "ampl2024wp1": [
+    "Uncategorized"
+  ],
+  "ampl2024wp2": [
+    "Uncategorized"
+  ],
+  "ampl2024wp3": [
+    "Uncategorized"
+  ],
+  "ampl2024wp4": [
+    "Uncategorized"
+  ],
+  "ampl2024wp5": [
+    "Uncategorized"
+  ],
+  "ampl2024wp6": [
+    "Uncategorized"
+  ],
+  "ampl2024wp7": [
+    "Uncategorized"
+  ],
+  "ampl2024wp8": [
+    "Uncategorized"
   ],
   "anct1": [
     "Intermediate Math"
@@ -961,6 +1000,12 @@
   ],
   "bbc09f": [
     "Graph Theory"
+  ],
+  "bbc09g": [
+    "Data Structures"
+  ],
+  "bbc09h": [
+    "Intermediate Math"
   ],
   "bbc09i": [
     "Greedy Algorithms",
@@ -4665,8 +4710,7 @@
     "String Algorithms"
   ],
   "coci15c2p5": [
-    "Data Structures",
-    "Dynamic Programming"
+    "Data Structures"
   ],
   "coci15c2p6": [
     "Divide and Conquer",
@@ -6079,9 +6123,6 @@
   ],
   "ddrp2": [
     "Implementation"
-  ],
-  "ddrp3": [
-    "Graph Theory"
   ],
   "ddrp4": [
     "Graph Theory"
@@ -9995,6 +10036,9 @@
     "Data Structures",
     "Geometry"
   ],
+  "homersimpson": [
+    "Dynamic Programming"
+  ],
   "hopscotch2": [
     "Data Structures",
     "Dynamic Programming"
@@ -10155,10 +10199,10 @@
     "Dynamic Programming"
   ],
   "ioi05p2": [
-    "Intermediate Math"
+    "Data Structures"
   ],
   "ioi05p3": [
-    "Data Structures"
+    "Intermediate Math"
   ],
   "ioi05p4": [
     "Implementation"
@@ -11044,6 +11088,9 @@
   "loveeve": [
     "Ad Hoc"
   ],
+  "lowestpriceintown": [
+    "Dynamic Programming"
+  ],
   "lrsubtree": [
     "Data Structures",
     "Graph Theory"
@@ -11409,6 +11456,9 @@
     "Intermediate Math"
   ],
   "meta": [
+    "Graph Theory"
+  ],
+  "miceandmaze": [
     "Graph Theory"
   ],
   "miniaturesudoku": [
@@ -13377,6 +13427,9 @@
   "ragetree1": [
     "Data Structures"
   ],
+  "rainydays": [
+    "Data Structures"
+  ],
   "ratmaze": [
     "Brute Force",
     "Implementation"
@@ -15222,6 +15275,9 @@
   "wacreject6": [
     "Graph Theory",
     "Simple Math"
+  ],
+  "war": [
+    "Graph Theory"
   ],
   "waterloo2001f1a": [
     "Implementation",
