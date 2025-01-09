@@ -58,41 +58,39 @@ class UserData:
         """
         Saves this object's user data to the database.
         """
-        control = db.cursor()
+        with db.cursor() as control:
+            # add user to database if it doesn't exist yet
+            control.execute(f"SELECT * FROM user_data WHERE user_id = '{self.user_id}'")
+            if not control.fetchone():  # doesn't exist yet
+                control.execute(f"INSERT INTO user_data VALUES ('{self.user_id}', '', 0, 0, 0, 0)")
+                db.commit()
 
-        # add user to database if it doesn't exist yet
-        control.execute(f"select * from user_data where user_id = '{self.user_id}'")
-        length = 0
-        for _ in control:
-            length += 1
-        if length == 0:
-            control.execute(f"insert into user_data values ('{self.user_id}', '', 0, 0, 0, 0)")
+            # update the user_object's information in the database
+            query = f"""
+            UPDATE user_data SET 
+            user_id = '{self.user_id}',
+            dmoj_username = %s,
+            user_level = {self.level},
+            experience = {self.experience},
+            messages = {self.messages},
+            next_experience_gain_time = {self.next_experience_gain_time}
+            WHERE user_id = '{self.user_id}'
+            """
+            control.execute(query, [self.dmoj_username])
             db.commit()
-
-        # put the user_object's information into the database
-        query = f"""update user_data set 
-        user_id = '{self.user_id}',
-        dmoj_username = %s,
-        user_level = {self.level},
-        experience = {self.experience},
-        messages = {self.messages},
-        next_experience_gain_time = {self.next_experience_gain_time} 
-        where user_id = '{self.user_id}'"""
-        control.execute(query, [self.dmoj_username])
-        db.commit()
 
 
 def get_user_data(user_id: int) -> UserData | None:
     """
     Returns a UserData object containing the given user's data.
-    Returns `None` if the given id does not exist in the database
+    Returns `None` if the given id does not exist in the database.
     """
-    control = db.cursor()
-    control.execute(f"select * from user_data where user_id = '{user_id}'")
-    try:
-        return UserData(*next(control))  # return first and only element returned from query
-    except StopIteration:
-        return None
+    with db.cursor() as control:
+        control.execute(f"SELECT * FROM user_data WHERE user_id = '{user_id}'")
+        try:
+            return UserData(*next(control))  # Return first and only element returned from query
+        except StopIteration:
+            return None
 
 
 def get_top_users():
@@ -100,9 +98,9 @@ def get_top_users():
     Returns data for the top users in the server.
     At most 10 entries will be returned.
     """
-    control = db.cursor()
-    control.execute("select * from user_data order by experience desc limit 10")
-    return [UserData(*user) for user in control]
+    with db.cursor() as control:
+        control.execute("SELECT * FROM user_data ORDER BY experience DESC LIMIT 10")
+        return [UserData(*user) for user in control]
 
 
 if __name__ == '__main__':
