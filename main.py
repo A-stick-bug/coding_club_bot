@@ -42,15 +42,15 @@ async def on_message(message):
 
     handle_message_sent(message, is_slash_command=False)
 
-    if message.content.startswith(",translate"):
-        cmd = message.content.split()
+    if message.content.startswith(",translate "):
+        # cmd = message.content.split()
         if message.reference:  # translate replied message
             original_message = await message.channel.fetch_message(message.reference.message_id)
             translated_text = translate_text(original_message.content, "en")
             await message.reply(translated_text)
 
         elif len(cmd) > 1:
-            translated_text = translate_text(cmd[1], "en")
+            translated_text = translate_text(message.content[11:], "en")
             await message.reply(translated_text)
 
 
