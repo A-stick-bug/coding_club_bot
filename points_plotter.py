@@ -9,6 +9,8 @@ import json
 import matplotlib.pyplot as plt
 import datetime as dt
 
+from dmoj_utils import balance
+
 load_dotenv("environment/.env")  # load all the variables from the env file
 api_key = os.getenv("DMOJ_PASSWORD")
 
@@ -56,13 +58,6 @@ def fetch_point_history(user: str):
     plotted data: balanced points (after applying formula)
     """
 
-    def balance(questions):
-        """applies formula to points based on question values"""
-        bal = sorted(questions.values(), reverse=True)  # sort by point worth
-        P = sum((0.95 ** i) * bal[i] for i in range(0, min(100, len(bal))))
-        B = 150 * (1 - 0.997 ** len(ac))
-        return P + B
-
     data = fetch_submission(user, 1)  # get number of submission pages
     n_pages = data["data"]["total_pages"]
 
@@ -82,7 +77,7 @@ def fetch_point_history(user: str):
                 if sub["result"] == "AC":  # solved new problem
                     ac.add(problem)
                 best[problem] = points
-                point_gains.append((date, balance(best)))
+                point_gains.append((date, balance(best, ac)))
 
     return point_gains
 
@@ -115,13 +110,6 @@ def fetch_mock_data():
     :return: balanced points based on mock data
     """
 
-    def balance(questions):
-        """applies formula to points based on question values"""
-        bal = sorted(questions.values(), reverse=True)  # sort by point worth
-        P = sum((0.95 ** i) * bal[i] for i in range(0, min(100, len(bal))))
-        B = 150 * (1 - 0.997 ** len(ac))
-        return P + B
-
     with open("dummy_submissions.json", "r") as dummy_data:
         data = json.load(dummy_data)
 
@@ -139,7 +127,7 @@ def fetch_mock_data():
             if sub["result"] == "AC":  # solved new problem
                 ac.add(problem)
             best[problem] = points
-            point_gains.append((date, balance(best)))
+            point_gains.append((date, balance(best, ac)))
     return point_gains
 
 

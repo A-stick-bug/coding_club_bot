@@ -14,7 +14,7 @@ from levels import handle_message_sent
 from banner import make_banner
 from leaderboard import make_leaderboard
 from points_plotter import fetch_problem_history, fetch_point_history, plot_points
-from problem_types_plotter import plot_problem_types
+from problem_types_plotter import plot_problem_types, plot_problem_types_weighted
 
 load_dotenv("environment/.env")  # load all the variables from the env file
 token = os.getenv("TOKEN")
@@ -244,6 +244,34 @@ async def plot_problem_types_cmd(ctx, users: discord.Option(str,
             dmoj_usernames = list(map(lambda x: x.strip(), dmoj_usernames))  # strip whitespace from all usernames
             plot_problem_types(dmoj_usernames)
         await ctx.respond(file=discord.File('problem_types_graph.png'))
+
+    except Exception as e:
+        await ctx.respond(f"An error has occurred while plotting types. Please alert an Executive. "
+                          f"Error message: {e}")
+        raise
+
+
+@bot.slash_command(name="plot_problem_types_weighted",
+                   description="Plot your DMOJ points by problem type. Weighted using the leaderboard system.")
+async def plot_problem_types_cmd(ctx, users: discord.Option(str,
+                                                            "Plot problem types of other users (DMOJ usernames, separate with comma)",
+                                                            required=False, default=None)):
+    try:
+        await ctx.defer()
+        if not users:  # plot your own problem types
+            user_id = ctx.author.id
+            user_data = get_user_data(user_id)
+            if user_data is None:
+                await ctx.respond(
+                    "You have not connected to a DMOJ account yet. You can do so using `/connect_account [DMOJ username]`")
+                return
+            plot_problem_types_weighted([user_data.dmoj_username])
+
+        else:  # plot and compare other people's problem types
+            dmoj_usernames = users.split(",")
+            dmoj_usernames = list(map(lambda x: x.strip(), dmoj_usernames))  # strip whitespace from all usernames
+            plot_problem_types_weighted(dmoj_usernames)
+        await ctx.respond(file=discord.File('problem_types_graph_weighted.png'))
 
     except Exception as e:
         await ctx.respond(f"An error has occurred while plotting types. Please alert an Executive. "

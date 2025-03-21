@@ -19,6 +19,9 @@ from matplotlib.projections.polar import PolarAxes
 from matplotlib.spines import Spine
 from matplotlib.transforms import Affine2D
 
+# for dmoj specific functions
+from dmoj_utils import balance_full_acs
+
 load_dotenv("environment/.env")  # load all the variables from the env file
 api_key = os.getenv("DMOJ_PASSWORD")
 PAGES = 160  # max pages on DMOJ
@@ -148,7 +151,7 @@ def update_problem_info():
     print("Successfully saved data")
 
 
-def get_user_problem_types(user: str):
+def get_user_problem_types(user: str) -> dict:
     """Returns how many problems of each type a user has solved"""
     url = f"https://dmoj.ca/api/v2/user/{user}"
 
@@ -196,10 +199,62 @@ def plot_problem_types(users):
     # legend for each user's color
     ax.legend(users, loc=(-0.15, 0.9), fontsize="medium")
     plt.savefig("problem_types_graph.png")
-    plt.show()  # uncomment when testing
+    # plt.show()  # uncomment when testing
+    plt.close()
+
+
+def get_user_problem_types_weighted(user: str):
+    """Returns the weighted point value of all problems of each type a user has solved"""
+    url = f"https://dmoj.ca/api/v2/user/{user}"
+
+    headers = {"Authorization": f"Bearer {api_key}"}
+    user = requests.get(url, headers).json()
+    problems = user["data"]["object"]["solved_problems"]
+
+    with open("problem_info.json", "r") as problem_types:
+        type_table = json.load(problem_types)
+    total = defaultdict(list)
+    for p in problems:
+        if p not in type_table:
+            raise KeyError(f"Problem code '{p}' not found. 'problem_info.json' may be outdated.")
+
+        types = type_table[p]["types"]
+        points = type_table[p]["points"]
+        for t in types:
+            if "Math" in t:  # combine all 3 math categories
+                total["Math"].append(points)
+            else:
+                total[t].append(points)
+    return total
+
+
+def plot_problem_types_weighted(users):
+    """Generate a plot based on how many of each type a user has solved."""
+    if len(users) > 5:
+        raise Exception("Too many users (5 max)")
+    N = len(CATEGORIES)
+    theta = radar_factory(N, frame='polygon')
+
+    # get each user's type data
+    data = []
+    for user in users:
+        user = get_user_problem_types_weighted(user)
+        data.append([balance_full_acs(user[i]) for i in CATEGORIES])  # todo: also make it consider partial AC
+    fig, ax = plt.subplots(figsize=(6, 6), subplot_kw=dict(projection='radar'))
+
+    # plot each person's data
+    for d in data:
+        ax.plot(theta, d)
+        ax.fill(theta, d, alpha=0.09, label='_nolegend_')
+    ax.set_varlabels(CATEGORIES)
+
+    # legend for each user's color
+    ax.legend(users, loc=(-0.15, 0.9), fontsize="medium")
+    plt.savefig("problem_types_graph_weighted.png")
+    # plt.show()  # uncomment when testing
     plt.close()
 
 
 if __name__ == '__main__':
-    # plot_problem_types(["Ivan_li"])
-    update_problem_info()
+    plot_problem_types_weighted(["ivan_li", "yujhtheyujh"])
+    # update_problem_info()
