@@ -130,10 +130,15 @@ def update_problem_info():
         for row in soup.find_all("td", class_="problem"):
             url_element = row.find("a")
             problem_url = url_element["href"].split("/")[-1]
+            type_table[problem_url] = {}
 
-            types_element = row.parent.find_next("td", class_="types")
-            tags = [t.text for t in types_element.find_all("span")]
-            type_table[problem_url] = tags
+            types_element = row.parent.find("td", class_="types")
+            types = [t.text for t in types_element.find_all("span")]
+            type_table[problem_url]["types"] = types
+
+            points_element = row.parent.find("td", class_="p")
+            points = int("".join(i for i in points_element.text if i != "p"))
+            type_table[problem_url]["points"] = points
 
         print(f"finished page {i}/{PAGES}")
         time.sleep(1)  # prevent rate limit
@@ -157,18 +162,19 @@ def get_user_problem_types(user: str):
     for p in problems:
         if p not in type_table:
             raise KeyError(f"Problem code '{p}' not found. 'problem_info.json' may be outdated.")
-        types = type_table[p]
 
+        types = type_table[p]["types"]
+        split_val = 1 / len(types)  # if a problem has 2 types, add 1/2 to each
         for t in types:
             if "Math" in t:  # combine all 3 math categories
-                total["Math"] += 1
+                total["Math"] += split_val
             else:
-                total[t] += 1
+                total[t] += split_val
     return total
 
 
 def plot_problem_types(users):
-    """Generate a plot """
+    """Generate a plot based on how many of each type a user has solved."""
     if len(users) > 5:
         raise Exception("Too many users (5 max)")
     N = len(CATEGORIES)
@@ -190,9 +196,10 @@ def plot_problem_types(users):
     # legend for each user's color
     ax.legend(users, loc=(-0.15, 0.9), fontsize="medium")
     plt.savefig("problem_types_graph.png")
-    # plt.show()  # uncomment when testing
+    plt.show()  # uncomment when testing
     plt.close()
 
 
 if __name__ == '__main__':
+    # plot_problem_types(["Ivan_li"])
     update_problem_info()

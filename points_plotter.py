@@ -9,28 +9,31 @@ import json
 import matplotlib.pyplot as plt
 import datetime as dt
 
+load_dotenv("environment/.env")  # load all the variables from the env file
+api_key = os.getenv("DMOJ_PASSWORD")
 
-def fetch_submission(user: str, api_key: str, page: int) -> dict:
+
+def fetch_submission(user: str, page: int) -> dict:
     url = f"https://dmoj.ca/api/v2/submissions?user={user}&page={page}"
     headers = {"Authorization": f"Bearer {api_key}"}
     response = requests.get(url, headers)
     return response.json()
 
 
-def fetch_raw_point_history(user: str, api_key: str):
+def fetch_raw_point_history(user: str):
     """
     get the data for the plotter
     plotted data: total points before balancing
     """
 
-    data = fetch_submission(user, api_key, 1)  # get number of submission pages
+    data = fetch_submission(user, 1)  # get number of submission pages
     n_pages = data["data"]["total_pages"]
 
     best = defaultdict(int)  # best points for each question
     point_gains = []  # (times when points were gained, new point value)
     total = 0
     for page in range(1, n_pages + 1):  # process each page (need multiple requests)
-        data = fetch_submission(user, api_key, page)
+        data = fetch_submission(user, page)
         submissions = data["data"]["objects"]
 
         for sub in submissions:  # process each submission
@@ -47,10 +50,10 @@ def fetch_raw_point_history(user: str, api_key: str):
     return point_gains
 
 
-def fetch_point_history(user: str, api_key: str):
+def fetch_point_history(user: str):
     """
     get the data for the plotter
-    plotted data: balanced points (after aplying formula)
+    plotted data: balanced points (after applying formula)
     """
 
     def balance(questions):
@@ -60,14 +63,14 @@ def fetch_point_history(user: str, api_key: str):
         B = 150 * (1 - 0.997 ** len(ac))
         return P + B
 
-    data = fetch_submission(user, api_key, 1)  # get number of submission pages
+    data = fetch_submission(user, 1)  # get number of submission pages
     n_pages = data["data"]["total_pages"]
 
     best = defaultdict(int)  # best points for each question
     point_gains = []  # (times when points were gained, new point value)
     ac = set()
     for page in range(1, n_pages + 1):  # process each page (need multiple requests)
-        data = fetch_submission(user, api_key, page)
+        data = fetch_submission(user, page)
         submissions = data["data"]["objects"]
 
         for sub in submissions:  # process each submission
@@ -84,17 +87,17 @@ def fetch_point_history(user: str, api_key: str):
     return point_gains
 
 
-def fetch_problem_history(user: str, api_key: str):
+def fetch_problem_history(user: str):
     """
     get a user's history of problems solved
     """
-    data = fetch_submission(user, api_key, 1)  # get number of submission pages
+    data = fetch_submission(user, 1)  # get number of submission pages
     n_pages = data["data"]["total_pages"]
 
     problems_solved = []  # (times when problems were solved, new problems solved)
     ac = set()
     for page in range(1, n_pages + 1):  # process each page (need multiple requests)
-        data = fetch_submission(user, api_key, page)
+        data = fetch_submission(user, page)
         submissions = data["data"]["objects"]
 
         for sub in submissions:  # process each submission
@@ -170,7 +173,7 @@ if __name__ == '__main__':
     if TESTING:
         history = fetch_mock_data()
     else:
-        history = fetch_problem_history(user, token)
+        history = fetch_problem_history(user)
 
     # plot points
     plot_points(history, user, "Points", "Points Progression")

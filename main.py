@@ -42,8 +42,8 @@ async def on_message(message):
 
     handle_message_sent(message, is_slash_command=False)
 
-    if message.content.startswith(",translate "):
-        # cmd = message.content.split()
+    if message.content.startswith(",translate"):
+        cmd = message.content.split(" ", 1)
         if message.reference:  # translate replied message
             original_message = await message.channel.fetch_message(message.reference.message_id)
             translated_text = translate_text(original_message.content, "en")
@@ -190,8 +190,7 @@ async def plot_dmoj_points(ctx, user: discord.Option(discord.User, "Plot points 
                     "You have not connected to a DMOJ account yet. You can do so using `/connect_account [DMOJ username]`")
             return
 
-        api_tk = os.getenv("DMOJ_PASSWORD")
-        history = fetch_point_history(user_data.dmoj_username, api_tk)
+        history = fetch_point_history(user_data.dmoj_username)
         plot_points(history, user_data.dmoj_username, "Points", "Points Progression")
         await ctx.respond(file=discord.File('point_graph.png'))
 
@@ -216,8 +215,7 @@ async def plot_dmoj_problems(ctx, user: discord.Option(discord.User, "Plot probl
                     "You have not connected to a DMOJ account yet. You can do so using `/connect_account [DMOJ username]`")
             return
 
-        api_tk = os.getenv("DMOJ_PASSWORD")
-        history = fetch_problem_history(user_data.dmoj_username, api_tk)
+        history = fetch_problem_history(user_data.dmoj_username)
         plot_points(history, user_data.dmoj_username, "Problems Solved", "Problems Progression")
         await ctx.respond(file=discord.File('point_graph.png'))
 
