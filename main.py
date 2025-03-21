@@ -44,7 +44,7 @@ async def on_message(message):
 
     if message.content.startswith(",translate"):
         cmd = message.content.split(" ", 1)
-        lang = cmd.split("-")
+        lang = cmd[0].split("-")
         sl = "auto"
         tl = "en"
         if len(lang) == 2:
@@ -56,7 +56,9 @@ async def on_message(message):
             original_message = await message.channel.fetch_message(message.reference.message_id)
             translated_text = translate_text(original_message.content, sl, tl)
             await message.reply(translated_text)
-
+        elif len(cmd) > 1:
+            translated_text = translate_text(cmd[1], sl, tl)
+            await message.reply(translated_text)
 
 @bot.slash_command(name="hello", description="A test command to make sure bot is working")
 async def hello(ctx):
