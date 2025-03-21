@@ -44,7 +44,7 @@ async def on_message(message):
 
     if message.content.startswith(",translate"):
         cmd = message.content.split(" ", 1)
-        lang = cmd.split("-")
+        lang = cmd[0].split("-")
         sl = "auto"
         tl = "en"
         if len(lang) == 2:
