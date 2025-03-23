@@ -1,17 +1,23 @@
 from __future__ import annotations
 from dataclasses import dataclass
+
 import os
 import mysql.connector as connector
+from mysql.connector import pooling
 from dotenv import load_dotenv
 
 # connect to database
 load_dotenv("environment/.env")
 database_password = os.getenv("DATABASE_PASSWORD")
-db = connector.connect(host="localhost",
-                       username="root",
-                       password=database_password,
-                       database="coding_club_bot")
-print("Database connection successful")
+
+dbconfig = {
+    "host": "localhost",
+    "user": "root",
+    "password": database_password,
+    "database": "coding_club_bot"
+}
+pool = pooling.MySQLConnectionPool(pool_name="main_pool", pool_size=5, **dbconfig)
+print("Database pool successfully created")
 
 """
 Contains data for a particular bot user.
@@ -58,26 +64,32 @@ class UserData:
         """
         Saves this object's user data to the database.
         """
-        with db.cursor() as control:
-            # add user to database if it doesn't exist yet
-            control.execute(f"SELECT * FROM user_data WHERE user_id = '{self.user_id}'")
-            if not control.fetchone():  # doesn't exist yet
-                control.execute(f"INSERT INTO user_data VALUES ('{self.user_id}', '', 0, 0, 0, 0)")
-                db.commit()
+        db = pool.get_connection()
+        try:
+            with db.cursor() as control:
+                # add user to database if it doesn't exist yet
+                control.execute(f"SELECT * FROM user_data WHERE user_id = '{self.user_id}'")
+                if not control.fetchone():  # doesn't exist yet
+                    control.execute(f"INSERT INTO user_data VALUES ('{self.user_id}', '', 0, 0, 0, 0)")
+                    db.commit()
 
-            # update the user_object's information in the database
-            query = f"""
-            UPDATE user_data SET 
-            user_id = '{self.user_id}',
-            dmoj_username = %s,
-            user_level = {self.level},
-            experience = {self.experience},
-            messages = {self.messages},
-            next_experience_gain_time = {self.next_experience_gain_time}
-            WHERE user_id = '{self.user_id}'
-            """
-            control.execute(query, [self.dmoj_username])
-            db.commit()
+                # update the user_object's information in the database
+                query = f"""
+                UPDATE user_data SET 
+                user_id = '{self.user_id}',
+                dmoj_username = %s,
+                user_level = {self.level},
+                experience = {self.experience},
+                messages = {self.messages},
+                next_experience_gain_time = {self.next_experience_gain_time}
+                WHERE user_id = '{self.user_id}'
+                """
+                control.execute(query, [self.dmoj_username])
+                db.commit()
+        except Exception as e:
+            print("Failed to save to db: " + str(e))
+        finally:
+            db.close()
 
 
 def get_user_data(user_id: int) -> UserData | None:
@@ -85,12 +97,18 @@ def get_user_data(user_id: int) -> UserData | None:
     Returns a UserData object containing the given user's data.
     Returns `None` if the given id does not exist in the database.
     """
-    with db.cursor() as control:
-        control.execute(f"SELECT * FROM user_data WHERE user_id = '{user_id}'")
-        try:
-            return UserData(*next(control))  # Return first and only element returned from query
-        except StopIteration:
-            return None
+    db = pool.get_connection()
+    try:
+        with db.cursor() as control:
+            control.execute(f"SELECT * FROM user_data WHERE user_id = '{user_id}'")
+            try:
+                return UserData(*next(control))  # Return first and only element returned from query
+            except StopIteration:
+                return None
+    except Exception as e:
+        print("Failed to fetch user data from db: " + str(e))
+    finally:
+        db.close()
 
 
 def get_top_users():
@@ -98,9 +116,15 @@ def get_top_users():
     Returns data for the top users in the server.
     At most 10 entries will be returned.
     """
-    with db.cursor() as control:
-        control.execute("SELECT * FROM user_data ORDER BY experience DESC LIMIT 10")
-        return [UserData(*user) for user in control]
+    db = pool.get_connection()
+    try:
+        with db.cursor() as control:
+            control.execute("SELECT * FROM user_data ORDER BY experience DESC LIMIT 10")
+            return [UserData(*user) for user in control]
+    except Exception as e:
+        print("Failed to fetch top users from db: " + str(e))
+    finally:
+        db.close()
 
 
 if __name__ == '__main__':
