@@ -26,7 +26,7 @@ load_dotenv("environment/.env")  # load all the variables from the env file
 api_key = os.getenv("DMOJ_PASSWORD")
 PAGES = 160  # max pages on DMOJ
 CATEGORIES = ["Data Structures", "Greedy Algorithms", "Ad Hoc",
-              "Math", "String Algorithms", "Graph Theory", "Dynamic Programming"]
+              "Math", "String Algorithms", "Graph Theory", "Dynamic Programming", "Implementation"]
 
 
 def radar_factory(num_vars, frame='circle'):
@@ -256,5 +256,5 @@ def plot_problem_types_weighted(users):
 
 
 if __name__ == '__main__':
-    plot_problem_types_weighted(["ivan_li", "yujhtheyujh"])
-    # update_problem_info()
+    plot_problem_types_weighted(["ivan_li"])
+    #update_problem_info()
